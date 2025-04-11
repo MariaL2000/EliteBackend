@@ -15,7 +15,22 @@ import os
 from decouple import Config, Csv
 # Añade esto a tu settings.py
 import time
+
+
+
+from dotenv import load_dotenv
+load_dotenv()
 STATIC_VERSION = int(time.time())
+
+
+
+
+
+
+
+
+import logging
+
 
 
 
@@ -57,15 +72,27 @@ SECRET_KEY = config('SECRET_KEY', default='clave_secreta_default')
 
 
 
+
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mariamarreromedrano@gmail.com'
-EMAIL_HOST_PASSWORD = 'eslx jcnm jitq pqnt'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+
+
+logging.info(f"EMAIL_HOST: {EMAIL_HOST}")
+logging.info(f"EMAIL_PORT: {EMAIL_PORT}")
+logging.info(f"EMAIL_HOST_USER: {EMAIL_HOST_USER}")
+logging.info(f"EMAIL_USE_TLS: {EMAIL_USE_TLS}")
+
+if not all([EMAIL_HOST_USER, EMAIL_HOST_PASSWORD]):
+    raise Exception('Email settings not properly configured. Check your .env file.')
 
 
 INSTALLED_APPS = [

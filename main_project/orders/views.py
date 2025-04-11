@@ -14,6 +14,8 @@ from django.urls import reverse
 from .forms import ScheduleSelectionForm,ClientOrderForm
 from django.conf import settings
 from urllib.parse import quote
+from socket import error as SocketError
+import errno
 
 
 def comments(request):
@@ -35,6 +37,9 @@ def comments(request):
     else:
         comments = Comment.objects.all()
         return render(request, "orders/reviews.html", {"comments": comments})
+
+
+
 
 def contact(request):
     if request.method == "POST":
@@ -80,6 +85,9 @@ def contact(request):
         except Exception as e:
             return JsonResponse({"errors": str(e)}, status=500)
     return render(request, "orders/contact.html", {"form": ClientOrderForm()})
+
+
+
 
 
 def about(request):
