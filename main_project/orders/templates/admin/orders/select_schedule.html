@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Select Schedule for Order {{ order.id }}</h1>
+
+
+    {% if not mailto_link %}
+    <form method="post" >
+        {% csrf_token %}
+        {{ form.as_p }}
+            <!-- Solo mostrar el botón "Apply" si no hay mailto_link -->
+            <button type="submit" class="button">Apply</button>
+       
+    </form>
+    {% endif %}
+    
+    {% if mailto_link %}
+        <p>Click the link below to open your email client with the pre-filled email:</p>
+        <a href="{{ mailto_link }}" class="button" target="_blank">Send Email</a>
+    {% endif %}
+{% endblock %}
+
+
