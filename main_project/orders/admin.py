@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.http import HttpResponse
+from .serializers import SiteConfigurationSerializer, OrderSerializer, CommentSerializer, ScheduleSerializer
 from .models import Order, Comment, Schedule, SiteConfiguration
 from .forms import SiteConfigurationForm, OrderForm
 from reportlab.pdfgen import canvas
@@ -9,13 +10,16 @@ from reportlab.pdfgen import canvas
 from django.contrib import admin
 from .models import Schedule
 
+@admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
+    serializer_class = ScheduleSerializer
     list_display = ('time_slot', 'date', 'is_available')
     search_fields = ('time_slot', 'date')
     list_filter = ('is_available', 'date')
     actions = ['mark_as_available', 'mark_as_unavailable']
 
-    
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(*args, **kwargs)
 
     def mark_as_available(self, request, queryset):
         queryset.update(is_available=True)
@@ -25,39 +29,22 @@ class ScheduleAdmin(admin.ModelAdmin):
         queryset.update(is_available=False)
     mark_as_unavailable.short_description = "Mark selected schedules as Unavailable"
 
-    def save_model(self, request, obj, form, change):
-        obj.clean()
-        super().save_model(request, obj, form, change)
-
-# Registrar el modelo con la clase de administración
-admin.site.register(Schedule, ScheduleAdmin)
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    form = OrderForm 
-    list_display = (
-        "id",
-        "get_client_name",
-        "description",
-        "phone",
-        "email",
-        "status",
-        "address",
-        "date",
-        "schedule",
-        "send_email_link",
-    )
+    serializer_class = OrderSerializer
+    list_display = ("id", "get_client_name", "description", "phone", "email", 
+                   "status", "address", "date", "schedule", "send_email_link")
     list_filter = ("status",)
-    actions = [
-        "generate_pdf",
-        "mark_as_pending",
-        "mark_as_in_progress",
-        "mark_as_completed",
-        "mark_as_cancelled",
-    ]
-    ordering = ["date","schedule"]
+    actions = ["generate_pdf", "mark_as_pending", "mark_as_in_progress", 
+              "mark_as_completed", "mark_as_cancelled"]
+    ordering = ["date", "schedule"]
 
+
+
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(*args, **kwargs)
 
     def has_change_permission(self, request, obj=None):
         return False  # Evita que se editen horarios desde el formulario de Orders
@@ -126,19 +113,19 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+    serializer_class = CommentSerializer
     list_display = ("name", "opinion", "rating", "sug")
     search_fields = ("name", "opinion")
     list_filter = ("rating",)
 
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(*args, **kwargs)
 
+
+@admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(admin.ModelAdmin):
-    form = SiteConfigurationForm
-    list_display = (
-        "background_color",
-        "text_color",
-        "button_color",
-        "button_text_color",
-    )
+    serializer_class = SiteConfigurationSerializer
+    list_display = ("background_color", "text_color", "button_color", "button_text_color")
     fieldsets = (
         (
             None,
@@ -274,9 +261,10 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             },
         ),
     )
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(*args, **kwargs)
+
 
     class Media:
         js = ("js/jscolor.js",)
 
-
-admin.site.register(SiteConfiguration, SiteConfigurationAdmin)

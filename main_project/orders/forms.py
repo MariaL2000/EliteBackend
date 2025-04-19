@@ -3,6 +3,8 @@ from .models import Order, Comment, Schedule
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from .models import SiteConfiguration
+from django.contrib import admin
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -74,16 +76,6 @@ class OrderForm(forms.ModelForm):
 
 
 
-
-
-
-
-
-
-
-from django import forms
-from .models import SiteConfiguration
-from django.contrib import admin
 
 class SiteConfigurationForm(forms.ModelForm):
     class Meta:

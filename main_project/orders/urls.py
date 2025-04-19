@@ -1,18 +1,18 @@
-# urls.py
 from django.urls import path
 from . import views
 
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('comments/', views.comments, name='comments'),
-    path('contact/', views.contact, name='contact'),
-    path('about/', views.about, name='about'),
-    path('gallery/', views.gallery, name='gallery'),
-    path('send_email/<int:order_id>/', views.send_email_to_client, name='send_email_to_client'),
-    path('bathrooms/', views.bathrooms, name='bathrooms'),
-    path('kitchens/', views.kitchens, name='kitchens'),
-    path('fireplaces/', views.fireplaces, name='fireplaces'),
-    # Ruta para la página de contacto donde el cliente puede aceptar o rechazar la oferta
-    path('contact_page/<int:order_id>/', views.contact_page, name='contact_page'),
+    # React API Endpoints
+    path('api/comments/', views.comments_api, name='comments_api'),
+    path('api/contact/', views.contact_api, name='contact_api'),
+  path('send_email_to_client/<int:order_id>/', views.send_email_to_client, name='send_email_to_client'),
+    path('api/contact-page/<int:order_id>/', views.contact_page_api, name='contact_page_api'),
+    path('api/index/', views.index_api, name='index_api'),
+     path('api/about/', views.about_api, name='about_api'),
+    path('api/gallery/', views.gallery_api, name='gallery_api'),
+    path('api/bathrooms/', views.bathrooms_api, name='bathrooms_api'),
+    path('api/kitchens/', views.kitchens_api, name='kitchens_api'),
+    path('api/fireplaces/', views.fireplaces_api, name='fireplaces_api'),
+    
 ]
